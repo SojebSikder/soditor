@@ -11,8 +11,7 @@ A simple usage with plugins
 </div>
 <script>
     const editor = new Editor("#toolbar", "#editor");
-    editor.use(boldPlugin);
-    editor.use(italicPlugin);
-    editor.use(imagePlugin);
+    editor.use(undoRedoPlugin);
+    editor.use(formattingPlugin);
 </script>
 ```

@@ -24,8 +24,11 @@ export class Editor {
   editor: HTMLElement;
   plugins: EditorPlugin[] = [];
 
+  private maxHistory = 100;
   private undoStack: string[] = [];
   private redoStack: string[] = [];
+
+  private inputListener?: EventListener;
 
   /**
    * Constructor
@@ -41,13 +44,22 @@ export class Editor {
     this.toolbar = toolbar;
     this.editor = editor;
 
+    // Set attributes
+    this.toolbar.setAttribute("role", "toolbar");
+    this.editor.setAttribute("role", "textbox");
+    this.editor.setAttribute("contenteditable", "true");
+
     // Save state on input
     this.saveState();
     const debouncedSave = debounce(() => this.saveState(), 300);
+    this.inputListener = debouncedSave;
     this.editor.addEventListener("input", debouncedSave);
   }
 
   private saveState(): void {
+    if (this.undoStack.length >= this.maxHistory) {
+      this.undoStack.shift(); // Remove oldest
+    }
     this.undoStack.push(this.editor.innerHTML);
     // Clear redo stack on new input
     this.redoStack = [];
@@ -80,6 +92,9 @@ export class Editor {
    * Destroy the editor
    */
   destroy(): void {
+    if (this.inputListener) {
+      this.editor.removeEventListener("input", this.inputListener);
+    }
     for (const plugin of this.plugins) {
       plugin.destroy?.(this);
     }
@@ -144,10 +159,13 @@ export class Editor {
     btn.onclick = action;
     this.toolbar.appendChild(btn);
   }
-}
 
-// --- Init ---
-// const editor = new Editor('toolbar', 'editor');
-// editor.use(boldPlugin);
-// editor.use(italicPlugin);
-// editor.use(imagePlugin);
+  toHTML(): string {
+    return this.editor.innerHTML;
+  }
+
+  fromHTML(html: string): void {
+    this.editor.innerHTML = html;
+    this.saveState();
+  }
+}
