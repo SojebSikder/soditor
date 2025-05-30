@@ -1,5 +1,18 @@
 import type { EditorPlugin } from "./types";
 
+function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  delay: number
+): T {
+  let timeoutId: number | null = null;
+  return function (this: any, ...args: any[]) {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = window.setTimeout(() => func.apply(this, args), delay);
+  } as T;
+}
+
 /**
  * Editor class
  * @class Editor
@@ -30,7 +43,8 @@ export class Editor {
 
     // Save state on input
     this.saveState();
-    this.editor.addEventListener("input", () => this.saveState());
+    const debouncedSave = debounce(() => this.saveState(), 300);
+    this.editor.addEventListener("input", debouncedSave);
   }
 
   private saveState(): void {
