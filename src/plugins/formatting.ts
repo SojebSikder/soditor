@@ -1,9 +1,25 @@
 import type { EditorPlugin } from "../editor/types";
 import { Editor } from "../editor/editor";
 
-export const imagePlugin: EditorPlugin = {
-  name: "image",
+export const formattingPlugin: EditorPlugin = {
+  name: "formatting",
   init(editor: Editor) {
+    editor.addButton("<b>B</b>", () => {
+      editor.exec((frag) => {
+        const el = document.createElement("b");
+        el.appendChild(frag);
+        return el;
+      });
+    });
+
+    editor.addButton("<i>I</i>", () => {
+      editor.exec((frag) => {
+        const el = document.createElement("i");
+        el.appendChild(frag);
+        return el;
+      });
+    });
+
     editor.addButton("🖼️ Image", () => {
       const url = prompt("Enter image URL:");
       if (!url) return;
@@ -26,5 +42,10 @@ export const imagePlugin: EditorPlugin = {
         sel.addRange(range);
       }
     });
+  },
+
+  destroy(editor: Editor) {
+    // Optional: remove button or clean up
+    // editor.toolbar.removeChild(editor.toolbar.querySelector("button") as HTMLElement);
   },
 };

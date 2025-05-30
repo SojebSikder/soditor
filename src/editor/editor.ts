@@ -11,6 +11,9 @@ export class Editor {
   editor: HTMLElement;
   plugins: EditorPlugin[] = [];
 
+  private undoStack: string[] = [];
+  private redoStack: string[] = [];
+
   /**
    * Constructor
    * @param toolbarId - The id of the toolbar
@@ -24,6 +27,49 @@ export class Editor {
     }
     this.toolbar = toolbar;
     this.editor = editor;
+
+    // Save state on input
+    this.saveState();
+    this.editor.addEventListener("input", () => this.saveState());
+  }
+
+  private saveState(): void {
+    this.undoStack.push(this.editor.innerHTML);
+    // Clear redo stack on new input
+    this.redoStack = [];
+  }
+
+  /**
+   * Undo the last action
+   */
+  undo(): void {
+    if (this.undoStack.length > 1) {
+      const currentState = this.undoStack.pop()!;
+      this.redoStack.push(currentState);
+      const previousState = this.undoStack[this.undoStack.length - 1];
+      this.editor.innerHTML = previousState;
+    }
+  }
+
+  /**
+   * Redo the last action
+   */
+  redo(): void {
+    if (this.redoStack.length > 0) {
+      const nextState = this.redoStack.pop()!;
+      this.undoStack.push(nextState);
+      this.editor.innerHTML = nextState;
+    }
+  }
+
+  /**
+   * Destroy the editor
+   */
+  destroy(): void {
+    for (const plugin of this.plugins) {
+      plugin.destroy?.(this);
+    }
+    this.plugins = [];
   }
 
   /**
@@ -54,13 +100,19 @@ export class Editor {
 
     const fragment = range.extractContents();
     const node = formatFn(fragment);
-    range.insertNode(node);
+
+    const wrapper = document.createDocumentFragment();
+    wrapper.appendChild(node);
+    range.insertNode(wrapper);
 
     range.setStartAfter(node);
     range.setEndAfter(node);
     const sel = window.getSelection();
     sel?.removeAllRanges();
     sel?.addRange(range);
+
+    // Save state after exec
+    this.saveState();
   }
 
   /**
@@ -71,6 +123,10 @@ export class Editor {
   addButton(label: string, action: () => void): void {
     const btn = document.createElement("button");
     btn.innerHTML = label;
+
+    btn.setAttribute("aria-label", label);
+    btn.classList.add("editor-btn");
+
     btn.onclick = action;
     this.toolbar.appendChild(btn);
   }
