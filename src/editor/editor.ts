@@ -204,6 +204,16 @@ export class Editor {
     btn.name = name;
     btn.innerHTML = props.text || "";
 
+    // tooltip
+    btn.classList.add("tooltip");
+    const tooltip = document.createElement("div");
+    tooltip.classList.add("tooltiptext");
+    tooltip.innerHTML = props.tooltip || "";
+    btn.appendChild(tooltip);
+
+    // add tooltip to btn
+    btn.appendChild(tooltip);
+
     btn.setAttribute("aria-label", props.tooltip || "");
     btn.classList.add("editor-btn");
 
