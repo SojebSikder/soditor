@@ -1,4 +1,4 @@
-import type { EditorPlugin } from "./types";
+import type { EditorElementProps, EditorPlugin } from "./types";
 
 function debounce<T extends (...args: any[]) => void>(
   func: T,
@@ -27,6 +27,11 @@ export class Editor {
   private maxHistory = 100;
   private undoStack: string[] = [];
   private redoStack: string[] = [];
+
+  /**
+   * Saved range for selection range
+   */
+  private savedRange: Range | null = null;
 
   private inputListener?: EventListener;
 
@@ -63,6 +68,35 @@ export class Editor {
     this.undoStack.push(this.editor.innerHTML);
     // Clear redo stack on new input
     this.redoStack = [];
+  }
+
+  private saveSelection() {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      this.savedRange = selection.getRangeAt(0);
+      console.log("Selection saved!");
+    } else {
+      console.log("No selection to save!");
+    }
+  }
+
+  private restoreSelection() {
+    if (this.savedRange) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(this.savedRange);
+      console.log("Selection restored!");
+    } else {
+      console.log("No saved selection!");
+    }
+  }
+
+  saveCurrentSelection() {
+    this.saveSelection();
+  }
+
+  restoreSavedSelection() {
+    this.restoreSelection();
   }
 
   /**
@@ -124,6 +158,9 @@ export class Editor {
    * @param formatFn - The function to format the selected text
    */
   exec(formatFn: (frag: DocumentFragment) => Node): void {
+    // Save selection before changes
+    this.saveSelection();
+
     const range = this.getSelectionRange();
     if (!range || range.collapsed) return;
 
@@ -142,6 +179,9 @@ export class Editor {
 
     // Save state after exec
     this.saveState();
+
+    // Optionally restore selection after exec, if needed
+    this.restoreSelection();
   }
 
   /**
@@ -149,14 +189,25 @@ export class Editor {
    * @param label - The label of the button
    * @param action - The action to perform when the button is clicked
    */
-  addButton(label: string, action: () => void): void {
-    const btn = document.createElement("button");
-    btn.innerHTML = label;
+  // addButton(label: string, action: () => void): void {
+  //   const btn = document.createElement("button");
+  //   btn.innerHTML = label;
 
-    btn.setAttribute("aria-label", label);
+  //   btn.setAttribute("aria-label", label);
+  //   btn.classList.add("editor-btn");
+
+  //   btn.onclick = action;
+  //   this.toolbar.appendChild(btn);
+  // }
+  addButton(name: string, props: EditorElementProps): void {
+    const btn = document.createElement("button");
+    btn.name = name;
+    btn.innerHTML = props.text || "";
+
+    btn.setAttribute("aria-label", props.tooltip || "");
     btn.classList.add("editor-btn");
 
-    btn.onclick = action;
+    btn.onclick = props.onAction;
     this.toolbar.appendChild(btn);
   }
 
