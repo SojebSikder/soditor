@@ -1,5 +1,9 @@
 import { EditorEventEmitter } from "./editorEventEmitter";
-import type { EditorElementProps, EditorPlugin } from "./types";
+import type {
+  EditorButtonElementProps,
+  EditorDropDownElementProps,
+  EditorPlugin,
+} from "./types";
 import type {
   EditorEventName,
   EditorEventCallback,
@@ -258,7 +262,7 @@ export class Editor {
   //   btn.onclick = action;
   //   this.toolbar.appendChild(btn);
   // }
-  addButton(name: string, props: EditorElementProps): void {
+  addButton(name: string, props: EditorButtonElementProps): void {
     const btn = document.createElement("button");
     btn.name = name;
     btn.innerHTML = props.text || "";
@@ -278,6 +282,38 @@ export class Editor {
 
     btn.onclick = props.onAction;
     this.toolbar.appendChild(btn);
+  }
+
+  addDropdown(name: string, props: EditorDropDownElementProps): void {
+    const dropdown = document.createElement("div");
+    dropdown.classList.add("editor-dropdown");
+
+    const button = document.createElement("button");
+    button.innerHTML = props.text || name;
+    button.setAttribute("aria-label", props.tooltip || "");
+    button.classList.add("editor-btn");
+
+    const menu = document.createElement("ul");
+    menu.classList.add("dropdown-menu");
+
+    (props.options || []).forEach((opt) => {
+      const item = document.createElement("li");
+      item.textContent = opt.label;
+      item.onclick = () => {
+        opt.onSelect(opt.value);
+        menu.style.display = "none";
+      };
+      menu.appendChild(item);
+    });
+
+    // Toggle menu
+    button.onclick = () => {
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    };
+
+    dropdown.appendChild(button);
+    dropdown.appendChild(menu);
+    this.toolbar.appendChild(dropdown);
   }
 
   toHTML(): string {
