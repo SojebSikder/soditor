@@ -1,4 +1,9 @@
+import { EditorEventEmitter } from "./editorEventEmitter";
 import type { EditorElementProps, EditorPlugin } from "./types";
+import type {
+  EditorEventName,
+  EditorEventCallback,
+} from "./editorEventEmitter";
 
 function debounce<T extends (...args: any[]) => void>(
   func: T,
@@ -35,6 +40,8 @@ export class Editor {
 
   private inputListener?: EventListener;
 
+  private emitter = new EditorEventEmitter();
+
   /**
    * Constructor
    * @param toolbarId - The id of the toolbar
@@ -55,10 +62,32 @@ export class Editor {
     this.editor.setAttribute("contenteditable", "true");
 
     // Save state on input
-    this.saveState();
-    const debouncedSave = debounce(() => this.saveState(), 300);
+    const debouncedSave = debounce(() => {
+      this.saveState();
+      this.emitter.emit("input", { html: this.editor.innerHTML });
+    }, 300);
+
     this.inputListener = debouncedSave;
+
     this.editor.addEventListener("input", debouncedSave);
+
+    this.editor.addEventListener("mouseup", () => {
+      this.emitter.emit("selectionchange", { range: this.getSelectionRange() });
+    });
+
+    this.editor.addEventListener("keyup", () => {
+      this.emitter.emit("selectionchange", { range: this.getSelectionRange() });
+    });
+
+    // observe mutations
+    const observer = new MutationObserver(() => {
+      this.emitter.emit("change", { html: this.editor.innerHTML });
+    });
+    observer.observe(this.editor, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
   }
 
   private saveState(): void {
@@ -99,6 +128,22 @@ export class Editor {
     this.restoreSelection();
   }
 
+  // listen to editor events
+  on<K extends EditorEventName>(
+    event: K,
+    callback: EditorEventCallback<K>
+  ): void {
+    this.emitter.on(event, callback);
+  }
+
+  // remove listener for editor events
+  off<K extends EditorEventName>(
+    event: K,
+    callback: EditorEventCallback<K>
+  ): void {
+    this.emitter.off(event, callback);
+  }
+
   /**
    * Undo the last action
    */
@@ -131,6 +176,9 @@ export class Editor {
     }
     for (const plugin of this.plugins) {
       plugin.destroy?.(this);
+      this.emitter.emit("pluginDestroy", {
+        pluginName: plugin.constructor.name,
+      });
     }
     this.plugins = [];
   }
@@ -142,6 +190,7 @@ export class Editor {
   use(plugin: EditorPlugin): void {
     plugin.init(this);
     this.plugins.push(plugin);
+    this.emitter.emit("pluginInit", { pluginName: plugin.constructor.name });
   }
 
   /**
