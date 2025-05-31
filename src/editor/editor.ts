@@ -4,6 +4,7 @@ import type {
   EditorEventName,
   EditorEventCallback,
 } from "./editorEventEmitter";
+import { getRegisteredPlugin } from "./pluginRegistry";
 
 function debounce<T extends (...args: any[]) => void>(
   func: T,
@@ -88,6 +89,12 @@ export class Editor {
       subtree: true,
       characterData: true,
     });
+
+    // Auto load plugins
+    const registered = getRegisteredPlugin();
+    for (const [name, plugin] of Object.entries(registered)) {
+      this.use(plugin);
+    }
   }
 
   private saveState(): void {
@@ -97,6 +104,8 @@ export class Editor {
     this.undoStack.push(this.editor.innerHTML);
     // Clear redo stack on new input
     this.redoStack = [];
+
+    this.emitter.emit("contentChange", { html: this.editor.innerHTML });
   }
 
   private saveSelection() {
@@ -229,8 +238,9 @@ export class Editor {
     // Save state after exec
     this.saveState();
 
-    // Optionally restore selection after exec, if needed
+    // restore selection after exec
     this.restoreSelection();
+    this.emitter.emit("execCommand", { command: formatFn.name || "unknown" });
   }
 
   /**

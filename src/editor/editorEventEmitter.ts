@@ -5,6 +5,8 @@ export type EditorEventMap = {
   selectionchange: { range: Range | null };
   pluginInit: { pluginName: string };
   pluginDestroy: { pluginName: string };
+  execCommand: { command: string };
+  contentChange: { html: string };
 };
 
 export type EditorEventName = keyof EditorEventMap;
