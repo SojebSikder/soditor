@@ -74,9 +74,9 @@ export class Editor {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
       this.savedRange = selection.getRangeAt(0);
-      console.log("Selection saved!");
+      // console.log("Selection saved!");
     } else {
-      console.log("No selection to save!");
+      // console.log("No selection to save!");
     }
   }
 
@@ -85,9 +85,9 @@ export class Editor {
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(this.savedRange);
-      console.log("Selection restored!");
+      // console.log("Selection restored!");
     } else {
-      console.log("No saved selection!");
+      // console.log("No saved selection!");
     }
   }
 
