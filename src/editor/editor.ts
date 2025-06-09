@@ -280,35 +280,37 @@ export class Editor {
     this.emitter.emit("execCommand", { command: formatFn.name || "unknown" });
   }
 
+  // ------------------------- UI -------------------------
+  /**
+   * Add a tooltip to an element
+   * @param element - The element to add the tooltip to
+   * @param tooltipText - The text of the tooltip
+   */
+  addTooltip(element: HTMLElement, tooltipText: string): void {
+    // tooltip
+    element.classList.add("seditor-tooltip");
+    const tooltip = document.createElement("div");
+    tooltip.classList.add("seditor-tooltiptext");
+    tooltip.innerHTML = tooltipText || "";
+    element.appendChild(tooltip);
+    // end tooltip
+  }
+
   /**
    * Add a button to the toolbar
    * @param label - The label of the button
    * @param action - The action to perform when the button is clicked
    */
-  // addButton(label: string, action: () => void): void {
-  //   const btn = document.createElement("button");
-  //   btn.innerHTML = label;
-
-  //   btn.setAttribute("aria-label", label);
-  //   btn.classList.add("editor-btn");
-
-  //   btn.onclick = action;
-  //   this.toolbar.appendChild(btn);
-  // }
   addButton(name: string, props: EditorButtonElementProps): void {
     const btn = document.createElement("button");
     btn.name = name;
     btn.innerHTML = props.text || "";
 
     // tooltip
-    btn.classList.add("tooltip");
-    const tooltip = document.createElement("div");
-    tooltip.classList.add("tooltiptext");
-    tooltip.innerHTML = props.tooltip || "";
-    btn.appendChild(tooltip);
+    this.addTooltip(btn, props.tooltip || "");
 
     btn.setAttribute("aria-label", props.tooltip || "");
-    btn.classList.add("editor-btn");
+    btn.classList.add("seditor-btn");
 
     // btn.onclick = props.onAction;
     btn.onclick = () => {
@@ -322,36 +324,55 @@ export class Editor {
 
   addDropdown(name: string, props: EditorDropDownElementProps): void {
     const dropdown = document.createElement("div");
-    dropdown.classList.add("editor-dropdown");
+    dropdown.classList.add("seditor-dropdown");
 
     const button = document.createElement("button");
     button.innerHTML = props.text || name;
     button.setAttribute("aria-label", props.tooltip || "");
-    button.classList.add("editor-btn");
+    button.classList.add("seditor-btn");
+    // tooltip
+    this.addTooltip(button, props.tooltip || "");
 
-    const menu = document.createElement("ul");
-    menu.classList.add("dropdown-menu");
+    const menu = document.createElement("div");
+    menu.classList.add("seditor-dropdown-content");
 
-    (props.options || []).forEach((opt) => {
-      const item = document.createElement("li");
+    // Add options to the dropdown menu
+    for (const opt of props.options || []) {
+      const item = document.createElement("a");
       item.textContent = opt.label;
       item.onclick = () => {
         opt.onSelect(opt.value);
-        menu.style.display = "none";
       };
       menu.appendChild(item);
-    });
+    }
 
     // Toggle menu
     button.onclick = () => {
-      menu.style.display = menu.style.display === "block" ? "none" : "block";
+      menu.classList.toggle("seditor-show");
     };
 
+    // Close the dropdown if clicked outside
+    window.onclick = (event) => {
+      if (!(event.target as HTMLElement).matches(".seditor-btn")) {
+        const dropdowns = document.getElementsByClassName(
+          "seditor-dropdown-content"
+        );
+        for (let i = 0; i < dropdowns.length; i++) {
+          if (dropdowns[i].classList.contains("seditor-show")) {
+            dropdowns[i].classList.remove("seditor-show");
+          }
+        }
+      }
+    };
+
+    // Append button and menu to the dropdown
     dropdown.appendChild(button);
     dropdown.appendChild(menu);
     this.toolbar.appendChild(dropdown);
   }
+  // ------------------------- End UI -------------------------
 
+  // ------------------------- Content Management -------------------------
   toHTML(): string {
     return this.editor.innerHTML;
   }
