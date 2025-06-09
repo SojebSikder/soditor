@@ -1,6 +1,6 @@
 # Description
 
-Seditor is a simple library for rich text editing with plugin architecture.
+Seditor is a library for rich text editing with plugin architecture.
 
 # Usage
 
