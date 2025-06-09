@@ -101,7 +101,7 @@ export class Editor {
     }
   }
 
-  private saveState(): void {
+  saveState(): void {
     if (this.undoStack.length >= this.maxHistory) {
       this.undoStack.shift(); // Remove oldest
     }
@@ -216,6 +216,39 @@ export class Editor {
   }
 
   /**
+   * Get the parent element of the current selection
+   * @returns The parent element of the current selection
+   */
+  getParentElement(): Element | null {
+    const sel = window.getSelection();
+
+    // const parent = sel?.anchorNode?.parentElement;
+
+    if (sel && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      return range.commonAncestorContainer.nodeType === Node.ELEMENT_NODE
+        ? (range.commonAncestorContainer as Element)
+        : range.commonAncestorContainer.parentElement;
+    }
+    return null;
+  }
+
+  /**
+   * Remove the parent element of the current selection
+   * @param parent - The parent element to remove
+   */
+  removeParentElement(parent: Element): void {
+    // Remove the strong by replacing it with its children
+    const element = parent;
+    const frag = document.createDocumentFragment();
+    while (element.firstChild) {
+      frag.appendChild(element.firstChild);
+    }
+    element.replaceWith(frag);
+    return;
+  }
+
+  /**
    * Execute a function to format the selected text
    * @param formatFn - The function to format the selected text
    */
@@ -243,7 +276,7 @@ export class Editor {
     this.saveState();
 
     // restore selection after exec
-    this.restoreSelection();
+    // this.restoreSelection();
     this.emitter.emit("execCommand", { command: formatFn.name || "unknown" });
   }
 
@@ -274,13 +307,16 @@ export class Editor {
     tooltip.innerHTML = props.tooltip || "";
     btn.appendChild(tooltip);
 
-    // add tooltip to btn
-    btn.appendChild(tooltip);
-
     btn.setAttribute("aria-label", props.tooltip || "");
     btn.classList.add("editor-btn");
 
-    btn.onclick = props.onAction;
+    // btn.onclick = props.onAction;
+    btn.onclick = () => {
+      if (props.onAction) {
+        props.onAction();
+        this.saveState();
+      }
+    };
     this.toolbar.appendChild(btn);
   }
 

@@ -31,9 +31,9 @@ editor.use({
     //   console.log("Editor content changed:", html);
     // });
 
-    editor.on("execCommand", (cmd) => {
-      console.log("Executed formatting:", cmd);
-    });
+    // editor.on("execCommand", (cmd) => {
+    //   console.log("Executed formatting:", cmd);
+    // });
 
     editor.addDropdown("formatBlock", {
       text: "Format",

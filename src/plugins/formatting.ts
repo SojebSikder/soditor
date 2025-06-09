@@ -8,48 +8,58 @@ export const formattingPlugin: EditorPlugin = {
       text: "<b>B</b>",
       tooltip: "Bold",
       onAction: () => {
+        const range = editor.getSelectionRange();
+        if (!range || range.collapsed) return;
+
+        const parent = editor.getParentElement();
+        if (parent?.tagName == "STRONG") {
+          return editor.removeParentElement(parent);
+        }
+
         editor.exec((frag) => {
-          const el = document.createElement("b");
-          el.appendChild(frag);
-          return el;
+          const span = document.createElement("strong");
+          span.appendChild(frag);
+          return span;
         });
       },
     });
-
-    // editor.addButton("Bold", () => {
-    //   const range = editor.getSelectionRange();
-    //   if (!range || range.collapsed) return;
-
-    //   const sel = window.getSelection();
-    //   const parent = sel?.anchorNode?.parentElement;
-
-    //   const isBold = parent?.style?.fontWeight === "bold";
-
-    //   editor.exec((fragment) => {
-    //     const span = document.createElement("span");
-
-    //     // If already bold, remove bold by unwrapping
-    //     if (isBold) {
-    //       const wrapper = document.createDocumentFragment();
-    //       wrapper.appendChild(fragment);
-    //       return wrapper;
-    //     }
-
-    //     // Apply bold style
-    //     span.style.fontWeight = "bold";
-    //     span.appendChild(fragment);
-    //     return span;
-    //   });
-    // });
 
     editor.addButton("italic", {
       text: "<i>I</i>",
       tooltip: "Italic",
       onAction: () => {
+        const range = editor.getSelectionRange();
+        if (!range || range.collapsed) return;
+
+        const parent = editor.getParentElement();
+        if (parent?.tagName == "EM") {
+          return editor.removeParentElement(parent);
+        }
+
         editor.exec((frag) => {
-          const el = document.createElement("i");
-          el.appendChild(frag);
-          return el;
+          const span = document.createElement("em");
+          span.appendChild(frag);
+          return span;
+        });
+      },
+    });
+
+    editor.addButton("underline", {
+      text: "<u>U</u>",
+      tooltip: "Underline",
+      onAction: () => {
+        const range = editor.getSelectionRange();
+        if (!range || range.collapsed) return;
+
+        const parent = editor.getParentElement();
+        if (parent?.tagName == "U") {
+          return editor.removeParentElement(parent);
+        }
+
+        editor.exec((frag) => {
+          const span = document.createElement("u");
+          span.appendChild(frag);
+          return span;
         });
       },
     });
