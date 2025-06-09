@@ -26,7 +26,12 @@ export const fontPlugin: EditorPlugin = {
           value: font,
           onSelect: (value) => {
             const selectedFont = value;
-            console.log(selectedFont);
+
+            const parent = editor.getParentElement();
+            if (parent && parent instanceof HTMLSpanElement) {
+              parent.style.fontFamily = selectedFont;
+              return;
+            }
 
             editor.exec((frag) => {
               const span = document.createElement("span");

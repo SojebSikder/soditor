@@ -342,7 +342,9 @@ export class Editor {
       item.textContent = opt.label;
       item.onclick = () => {
         if (opt.onSelect) {
+          this.restoreSelection();
           opt.onSelect(opt.value);
+          this.saveSelection();
         }
       };
       menu.appendChild(item);
@@ -350,6 +352,7 @@ export class Editor {
 
     // Toggle menu
     button.onclick = () => {
+      this.saveSelection();
       menu.classList.toggle("seditor-show");
     };
 
