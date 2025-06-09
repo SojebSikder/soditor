@@ -17,27 +17,26 @@ export const fontPlugin: EditorPlugin = {
       "Trebuchet MS",
     ];
 
-    const select = document.createElement("select");
-    select.setAttribute("aria-label", "Font selector");
-    select.classList.add("editor-font-select");
+    editor.addDropdown("fonts", {
+      text: "Font",
+      tooltip: "Font",
+      options: fonts.map((font) => {
+        return {
+          label: font,
+          value: font,
+          onSelect: (value) => {
+            const selectedFont = value;
+            console.log(selectedFont);
 
-    fonts.forEach((font) => {
-      const option = document.createElement("option");
-      option.value = font;
-      option.innerText = font;
-      select.appendChild(option);
+            editor.exec((frag) => {
+              const span = document.createElement("span");
+              span.style.fontFamily = selectedFont;
+              span.appendChild(frag);
+              return span;
+            });
+          },
+        };
+      }),
     });
-
-    select.onchange = () => {
-      const selectedFont = select.value;
-      editor.exec((fragment) => {
-        const span = document.createElement("span");
-        span.style.fontFamily = selectedFont;
-        span.appendChild(fragment);
-        return span;
-      });
-    };
-
-    editor.toolbar.appendChild(select);
   },
 };

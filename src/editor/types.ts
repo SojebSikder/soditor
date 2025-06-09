@@ -26,8 +26,8 @@ export interface EditorButtonElementProps extends EditorElementProps {}
 
 export interface EditorDropdownOption {
   label: string;
-  value: string;
-  onSelect: (value: string) => void;
+  value?: string;
+  onSelect?: (value: string) => void;
 }
 
 export interface EditorDropDownElementProps extends EditorElementProps {

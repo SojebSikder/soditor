@@ -341,7 +341,9 @@ export class Editor {
       const item = document.createElement("a");
       item.textContent = opt.label;
       item.onclick = () => {
-        opt.onSelect(opt.value);
+        if (opt.onSelect) {
+          opt.onSelect(opt.value);
+        }
       };
       menu.appendChild(item);
     }

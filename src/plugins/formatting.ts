@@ -17,9 +17,9 @@ export const formattingPlugin: EditorPlugin = {
         }
 
         editor.exec((frag) => {
-          const span = document.createElement("strong");
-          span.appendChild(frag);
-          return span;
+          const el = document.createElement("strong");
+          el.appendChild(frag);
+          return el;
         });
       },
     });
@@ -37,9 +37,9 @@ export const formattingPlugin: EditorPlugin = {
         }
 
         editor.exec((frag) => {
-          const span = document.createElement("em");
-          span.appendChild(frag);
-          return span;
+          const el = document.createElement("em");
+          el.appendChild(frag);
+          return el;
         });
       },
     });
@@ -57,9 +57,9 @@ export const formattingPlugin: EditorPlugin = {
         }
 
         editor.exec((frag) => {
-          const span = document.createElement("u");
-          span.appendChild(frag);
-          return span;
+          const el = document.createElement("u");
+          el.appendChild(frag);
+          return el;
         });
       },
     });
