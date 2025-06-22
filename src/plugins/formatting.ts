@@ -175,6 +175,43 @@ export const formattingPlugin: EditorPlugin = {
         },
       ],
     });
+
+    // allignemtn dropdown
+    const alignOptions = [
+      { label: "Left", value: "left" },
+      { label: "Center", value: "center" },
+      { label: "Right", value: "right" },
+      { label: "Justify", value: "justify" },
+    ];
+
+    editor.addDropdown("align", {
+      text: "Align",
+      tooltip: "Text alignment",
+      options: alignOptions.map((option) => ({
+        label: option.label,
+        value: option.value,
+        onSelect: (value) => {
+          const range = editor.getSelectionRange();
+          if (!range || range.collapsed) return;
+
+          const parent = editor.getParentElement();
+          if (parent && parent instanceof HTMLElement) {
+            if (parent?.tagName == "P") {
+              parent.style.textAlign = value;
+              return;
+            } else {
+              editor.exec((frag) => {
+                const el = document.createElement("p");
+                el.style.textAlign = value;
+                el.appendChild(frag);
+                return el;
+              });
+            }
+          }
+        },
+      })),
+    });
+    // end alignment dropdown
   },
 
   destroy(editor: Editor) {

@@ -249,6 +249,14 @@ export class Editor {
   }
 
   /**
+   * Insert a node into the editor
+   * @param node - The node to insert
+   */
+  insertNode(node: Node): void {
+    this.editor.appendChild(node);
+  }
+
+  /**
    * Execute a function to format the selected text
    * @param formatFn - The function to format the selected text
    */
