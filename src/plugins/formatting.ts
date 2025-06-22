@@ -90,6 +90,91 @@ export const formattingPlugin: EditorPlugin = {
         }
       },
     });
+
+    // Formatting dropdown
+    editor.addDropdown("format", {
+      text: "Format",
+      tooltip: "Text format",
+      options: [
+        {
+          label: "Heading 1",
+          value: "h1",
+          onSelect: (tag) => {
+            editor.exec((frag) => {
+              const el = document.createElement(tag);
+              el.appendChild(frag);
+              return el;
+            });
+          },
+        },
+        {
+          label: "Heading 2",
+          value: "h2",
+          onSelect: (tag) => {
+            editor.exec((frag) => {
+              const el = document.createElement(tag);
+              el.appendChild(frag);
+              return el;
+            });
+          },
+        },
+        {
+          label: "Heading 3",
+          value: "h3",
+          onSelect: (tag) => {
+            editor.exec((frag) => {
+              const el = document.createElement(tag);
+              el.appendChild(frag);
+              return el;
+            });
+          },
+        },
+        {
+          label: "Heading 4",
+          value: "h4",
+          onSelect: (tag) => {
+            editor.exec((frag) => {
+              const el = document.createElement(tag);
+              el.appendChild(frag);
+              return el;
+            });
+          },
+        },
+        {
+          label: "Heading 5",
+          value: "h5",
+          onSelect: (tag) => {
+            editor.exec((frag) => {
+              const el = document.createElement(tag);
+              el.appendChild(frag);
+              return el;
+            });
+          },
+        },
+        {
+          label: "Heading 6",
+          value: "h6",
+          onSelect: (tag) => {
+            editor.exec((frag) => {
+              const el = document.createElement(tag);
+              el.appendChild(frag);
+              return el;
+            });
+          },
+        },
+        {
+          label: "Paragraph",
+          value: "p",
+          onSelect: (tag) => {
+            editor.exec((frag) => {
+              const el = document.createElement(tag);
+              el.appendChild(frag);
+              return el;
+            });
+          },
+        },
+      ],
+    });
   },
 
   destroy(editor: Editor) {

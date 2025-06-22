@@ -34,35 +34,6 @@ editor.use({
     // editor.on("execCommand", (cmd) => {
     //   console.log("Executed formatting:", cmd);
     // });
-
-    editor.addDropdown("formatBlock", {
-      text: "Format",
-      tooltip: "Text format",
-      options: [
-        {
-          label: "Heading 1",
-          value: "h1",
-          onSelect: (tag) => {
-            editor.exec((frag) => {
-              const el = document.createElement(tag);
-              el.appendChild(frag);
-              return el;
-            });
-          },
-        },
-        {
-          label: "Paragraph",
-          value: "p",
-          onSelect: (tag) => {
-            editor.exec((frag) => {
-              const el = document.createElement(tag);
-              el.appendChild(frag);
-              return el;
-            });
-          },
-        },
-      ],
-    });
   },
   destroy(editor) {
     console.log("Plugin cleanup!");
