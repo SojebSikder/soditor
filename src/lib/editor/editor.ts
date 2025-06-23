@@ -296,9 +296,9 @@ export class Editor {
    */
   addTooltip(element: HTMLElement, tooltipText: string): void {
     // tooltip
-    element.classList.add("seditor-tooltip");
+    element.classList.add("soditor-tooltip");
     const tooltip = document.createElement("div");
-    tooltip.classList.add("seditor-tooltiptext");
+    tooltip.classList.add("soditor-tooltiptext");
     tooltip.innerHTML = tooltipText || "";
     element.appendChild(tooltip);
     // end tooltip
@@ -318,7 +318,7 @@ export class Editor {
     this.addTooltip(btn, props.tooltip || "");
 
     btn.setAttribute("aria-label", props.tooltip || "");
-    btn.classList.add("seditor-btn");
+    btn.classList.add("soditor-btn");
 
     // btn.onclick = props.onAction;
     btn.onclick = () => {
@@ -332,17 +332,17 @@ export class Editor {
 
   addDropdown(name: string, props: EditorDropDownElementProps): void {
     const dropdown = document.createElement("div");
-    dropdown.classList.add("seditor-dropdown");
+    dropdown.classList.add("soditor-dropdown");
 
     const button = document.createElement("button");
     button.innerHTML = props.text || name;
     button.setAttribute("aria-label", props.tooltip || "");
-    button.classList.add("seditor-btn");
+    button.classList.add("soditor-btn");
     // tooltip
     this.addTooltip(button, props.tooltip || "");
 
     const menu = document.createElement("div");
-    menu.classList.add("seditor-dropdown-content");
+    menu.classList.add("soditor-dropdown-content");
 
     // Add options to the dropdown menu
     for (const opt of props.options || []) {
@@ -361,18 +361,18 @@ export class Editor {
     // Toggle menu
     button.onclick = () => {
       this.saveSelection();
-      menu.classList.toggle("seditor-show");
+      menu.classList.toggle("soditor-show");
     };
 
     // Close the dropdown if clicked outside
     window.onclick = (event) => {
-      if (!(event.target as HTMLElement).matches(".seditor-btn")) {
+      if (!(event.target as HTMLElement).matches(".soditor-btn")) {
         const dropdowns = document.getElementsByClassName(
-          "seditor-dropdown-content"
+          "soditor-dropdown-content"
         );
         for (let i = 0; i < dropdowns.length; i++) {
-          if (dropdowns[i].classList.contains("seditor-show")) {
-            dropdowns[i].classList.remove("seditor-show");
+          if (dropdowns[i].classList.contains("soditor-show")) {
+            dropdowns[i].classList.remove("soditor-show");
           }
         }
       }

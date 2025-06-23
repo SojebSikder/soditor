@@ -1,11 +1,12 @@
-import "./style.css";
-import { Editor } from "./editor/editor";
-import { formattingPlugin } from "./plugins/formatting";
-import { undoRedoPlugin } from "./plugins/undoRedo";
-import { fontPlugin } from "./plugins/font";
-import { colorPickerPlugin } from "./plugins/colorPicker";
+import {
+  Editor,
+  formattingPlugin,
+  undoRedoPlugin,
+  fontPlugin,
+  colorPickerPlugin,
+} from "./lib/index";
 
-const editor = new Editor("#seditor-toolbar", "#seditor-editor");
+const editor = new Editor("#soditor-toolbar", "#soditor-editor");
 editor.use(undoRedoPlugin);
 editor.use(formattingPlugin);
 editor.use(fontPlugin);
@@ -18,19 +19,15 @@ editor.use({
     //   // Sync to backend or localStorage
     //   console.log("Real-time HTML:", html);
     // });
-
     // editor.on("selectionchange", ({ range }) => {
     //   console.log("User moved selection:", range);
     // });
-
     // editor.on("change", ({ html }) => {
     //   console.log("Content mutated via DOM:", html);
     // });
-
     // editor.on("contentChange", (html) => {
     //   console.log("Editor content changed:", html);
     // });
-
     // editor.on("execCommand", (cmd) => {
     //   console.log("Executed formatting:", cmd);
     // });

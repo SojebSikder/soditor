@@ -25,6 +25,7 @@ export class EditorEventEmitter {
   }
 
   off<K extends EditorEventName>(event: K, listener: EditorEventCallback<K>) {
+    // @ts-ignore
     this.listeners[event] = this.listeners[event]?.filter(
       (fn) => fn !== listener
     );

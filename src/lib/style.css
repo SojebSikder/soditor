@@ -1,5 +1,5 @@
 /* Editor */
-#seditor-editor {
+#soditor-editor {
   border: 1px solid #ccc;
   min-height: 150px;
   padding: 10px;
@@ -7,7 +7,7 @@
 }
 
 /* Editor toolbar */
-#seditor-toolbar {
+#soditor-toolbar {
   display: flex;
   gap: 2px;
   padding: 8px 5px;
@@ -15,23 +15,23 @@
   border-radius: 5px;
 }
 
-#seditor-font-select {
+#soditor-font-select {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.seditor-active {
+.soditor-active {
   background-color: #ccc;
 }
 
 /* start tooltip */
-.seditor-tooltip {
+.soditor-tooltip {
   position: relative;
   display: inline-block;
 }
 
-.seditor-tooltip .seditor-tooltiptext {
+.soditor-tooltip .soditor-tooltiptext {
   visibility: hidden;
   background-color: #333;
   color: #fff;
@@ -49,12 +49,12 @@
   transition: opacity 0.3s;
 }
 
-.seditor-tooltip:hover .seditor-tooltiptext {
+.soditor-tooltip:hover .soditor-tooltiptext {
   visibility: visible;
   opacity: 1;
 }
 
-.seditor-tooltip .seditor-tooltiptext::after {
+.soditor-tooltip .soditor-tooltiptext::after {
   content: "";
   position: absolute;
   top: 100%; /* At the bottom of the tooltip */
@@ -62,7 +62,7 @@
   margin-left: -5px;
 }
 
-.seditor-tooltip .seditor-tooltiptext::before {
+.soditor-tooltip .soditor-tooltiptext::before {
   content: "";
   position: absolute;
   top: 100%;
@@ -73,14 +73,14 @@
 
 /* Dropdown */
 /* Container */
-.seditor-dropdown {
+.soditor-dropdown {
   position: relative;
   display: inline-block;
   font-family: Arial, sans-serif;
 }
 
 /* Dropdown button */
-.seditor-btn {
+.soditor-btn {
   background-color: white;
   color: black;
   padding: 5px 10px;
@@ -90,16 +90,16 @@
   border-radius: 4px;
 }
 
-.seditor-btn:hover {
+.soditor-btn:hover {
   background-color: #f1f1f1;
 }
 
-.seditor-btn:active {
+.soditor-btn:active {
   background-color: #ccc;
 }
 
 /* Dropdown content (hidden by default) */
-.seditor-dropdown-content {
+.soditor-dropdown-content {
   display: none;
   position: absolute;
   background-color: #f9f9f9;
@@ -113,7 +113,7 @@
 }
 
 /* Individual dropdown items */
-.seditor-dropdown-content a {
+.soditor-dropdown-content a {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
@@ -121,16 +121,16 @@
   border-bottom: 1px solid #ddd;
 }
 
-.seditor-dropdown-content a:last-child {
+.soditor-dropdown-content a:last-child {
   border-bottom: none;
 }
 
-.seditor-dropdown-content a:hover {
+.soditor-dropdown-content a:hover {
   background-color: #f1f1f1;
 }
 
 /* Show the dropdown */
-.seditor-show {
+.soditor-show {
   display: block;
 }
 /* end dropdown */

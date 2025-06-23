@@ -1,6 +1,6 @@
 # Description
 
-Seditor is a library for rich text editing with plugin architecture.
+Soditor is a library for rich text editing with plugin architecture.
 
 # Screenshots
 
@@ -12,12 +12,12 @@ A simple usage with plugins
 
 ```html
 <div style="width: 100%; margin: 0 auto; max-width: 1000px;">
-  <div id="seditor-toolbar"></div>
-  <div id="seditor-editor">Hello world!</div>
+  <div id="soditor-toolbar"></div>
+  <div id="soditor-editor">Hello world!</div>
 </div>
 
 <script>
-  const editor = new Editor("#seditor-toolbar", "#seditor-editor");
+  const editor = new Editor("#soditor-toolbar", "#soditor-editor");
   // use plugins
   editor.use(undoRedoPlugin);
   editor.use(formattingPlugin);
