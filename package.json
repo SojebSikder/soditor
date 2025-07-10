@@ -1,5 +1,5 @@
 {
-  "name": "soditor",
+  "name": "soditorjs",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/soditor.umd.js",
