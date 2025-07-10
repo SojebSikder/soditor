@@ -98,6 +98,17 @@
   background-color: #ccc;
 }
 
+/* primary button */
+.soditor-btn-primary {
+  background-color: #0f81c8; /* blue */
+  color: white;
+  border: none;
+}
+
+.soditor-btn-primary:hover {
+  background-color: #0d6fa1; /* darker blue */
+}
+
 /* Dropdown content (hidden by default) */
 .soditor-dropdown-content {
   display: none;
@@ -147,3 +158,47 @@
     background-color: #f9f9f9;
   }
 }
+
+/* start window modal */
+.soditor-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 80px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.soditor-modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.soditor-close {
+  color: #aaa;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.soditor-modal-footer {
+  text-align: right;
+  margin-top: 20px;
+}
+
+.soditor-modal-footer button {
+  margin-left: 8px;
+}
+
+/* end modal window */

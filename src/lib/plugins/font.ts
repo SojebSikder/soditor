@@ -17,7 +17,7 @@ export const fontPlugin: EditorPlugin = {
       "Trebuchet MS",
     ];
 
-    editor.addDropdown("fonts", {
+    editor.ui.addDropdown("fonts", {
       text: "Font",
       tooltip: "Font",
       options: fonts.map((font) => {

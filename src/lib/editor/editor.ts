@@ -9,6 +9,7 @@ import type {
   EditorEventCallback,
 } from "./editorEventEmitter";
 import { getRegisteredPlugin } from "./pluginRegistry";
+import { UI } from "./ui";
 
 function debounce<T extends (...args: any[]) => void>(
   func: T,
@@ -34,6 +35,8 @@ export class Editor {
   editor: HTMLElement;
   plugins: EditorPlugin[] = [];
 
+  public ui: UI;
+
   private maxHistory = 100;
   private undoStack: string[] = [];
   private redoStack: string[] = [];
@@ -41,7 +44,7 @@ export class Editor {
   /**
    * Saved range for selection range
    */
-  private savedRange: Range | null = null;
+  public savedRange: Range | null = null;
 
   private inputListener?: EventListener;
 
@@ -99,6 +102,9 @@ export class Editor {
     for (const [name, plugin] of Object.entries(registered)) {
       this.use(plugin);
     }
+
+    // Initialize UI
+    this.ui = new UI(this);
   }
 
   saveState(): void {
@@ -112,7 +118,7 @@ export class Editor {
     this.emitter.emit("contentChange", { html: this.editor.innerHTML });
   }
 
-  private saveSelection() {
+  public saveSelection() {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
       this.savedRange = selection.getRangeAt(0);
@@ -122,7 +128,7 @@ export class Editor {
     }
   }
 
-  private restoreSelection() {
+  public restoreSelection() {
     if (this.savedRange) {
       const selection = window.getSelection();
       selection.removeAllRanges();
@@ -288,104 +294,40 @@ export class Editor {
     this.emitter.emit("execCommand", { command: formatFn.name || "unknown" });
   }
 
-  // ------------------------- UI -------------------------
-  /**
-   * Add a tooltip to an element
-   * @param element - The element to add the tooltip to
-   * @param tooltipText - The text of the tooltip
-   */
-  addTooltip(element: HTMLElement, tooltipText: string): void {
-    // tooltip
-    element.classList.add("soditor-tooltip");
-    const tooltip = document.createElement("div");
-    tooltip.classList.add("soditor-tooltiptext");
-    tooltip.innerHTML = tooltipText || "";
-    element.appendChild(tooltip);
-    // end tooltip
-  }
+  // ------------------------- Content Management -------------------------
+  insertContent(content: string): void {
+    this.saveSelection();
 
-  /**
-   * Add a button to the toolbar
-   * @param label - The label of the button
-   * @param action - The action to perform when the button is clicked
-   */
-  addButton(name: string, props: EditorButtonElementProps): void {
-    const btn = document.createElement("button");
-    btn.name = name;
-    btn.innerHTML = props.text || "";
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = content;
 
-    // tooltip
-    this.addTooltip(btn, props.tooltip || "");
+    const range = this.getSelectionRange();
+    if (range && !range.collapsed) {
+      range.deleteContents();
 
-    btn.setAttribute("aria-label", props.tooltip || "");
-    btn.classList.add("soditor-btn");
-
-    // btn.onclick = props.onAction;
-    btn.onclick = () => {
-      if (props.onAction) {
-        props.onAction();
-        this.saveState();
+      // Insert all children of tempDiv at the range
+      const frag = document.createDocumentFragment();
+      while (tempDiv.firstChild) {
+        frag.appendChild(tempDiv.firstChild);
       }
-    };
-    this.toolbar.appendChild(btn);
-  }
+      range.insertNode(frag);
 
-  addDropdown(name: string, props: EditorDropDownElementProps): void {
-    const dropdown = document.createElement("div");
-    dropdown.classList.add("soditor-dropdown");
+      // Move cursor to the end of inserted content
+      range.collapse(false);
 
-    const button = document.createElement("button");
-    button.innerHTML = props.text || name;
-    button.setAttribute("aria-label", props.tooltip || "");
-    button.classList.add("soditor-btn");
-    // tooltip
-    this.addTooltip(button, props.tooltip || "");
-
-    const menu = document.createElement("div");
-    menu.classList.add("soditor-dropdown-content");
-
-    // Add options to the dropdown menu
-    for (const opt of props.options || []) {
-      const item = document.createElement("a");
-      item.textContent = opt.label;
-      item.onclick = () => {
-        if (opt.onSelect) {
-          this.restoreSelection();
-          opt.onSelect(opt.value);
-          this.saveSelection();
-        }
-      };
-      menu.appendChild(item);
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    } else {
+      // If no selection or collapsed, just append the content nodes
+      while (tempDiv.firstChild) {
+        this.editor.appendChild(tempDiv.firstChild);
+      }
     }
 
-    // Toggle menu
-    button.onclick = () => {
-      this.saveSelection();
-      menu.classList.toggle("soditor-show");
-    };
-
-    // Close the dropdown if clicked outside
-    window.onclick = (event) => {
-      if (!(event.target as HTMLElement).matches(".soditor-btn")) {
-        const dropdowns = document.getElementsByClassName(
-          "soditor-dropdown-content"
-        );
-        for (let i = 0; i < dropdowns.length; i++) {
-          if (dropdowns[i].classList.contains("soditor-show")) {
-            dropdowns[i].classList.remove("soditor-show");
-          }
-        }
-      }
-    };
-
-    // Append button and menu to the dropdown
-    dropdown.appendChild(button);
-    dropdown.appendChild(menu);
-    this.toolbar.appendChild(dropdown);
+    this.saveState();
   }
-  // ------------------------- End UI -------------------------
 
-  // ------------------------- Content Management -------------------------
   toHTML(): string {
     return this.editor.innerHTML;
   }

@@ -4,7 +4,7 @@ import { Editor } from "../editor/editor";
 export const formattingPlugin: EditorPlugin = {
   name: "formatting",
   init(editor: Editor) {
-    editor.addButton("bold", {
+    editor.ui.addButton("bold", {
       text: "<b>B</b>",
       tooltip: "Bold",
       onAction: () => {
@@ -24,7 +24,7 @@ export const formattingPlugin: EditorPlugin = {
       },
     });
 
-    editor.addButton("italic", {
+    editor.ui.addButton("italic", {
       text: "<i>I</i>",
       tooltip: "Italic",
       onAction: () => {
@@ -44,7 +44,7 @@ export const formattingPlugin: EditorPlugin = {
       },
     });
 
-    editor.addButton("underline", {
+    editor.ui.addButton("underline", {
       text: "<u>U</u>",
       tooltip: "Underline",
       onAction: () => {
@@ -64,7 +64,7 @@ export const formattingPlugin: EditorPlugin = {
       },
     });
 
-    editor.addButton("image", {
+    editor.ui.addButton("image", {
       text: "🖼️ Image",
       tooltip: "Insert Image",
       onAction: () => {
@@ -92,7 +92,7 @@ export const formattingPlugin: EditorPlugin = {
     });
 
     // Formatting dropdown
-    editor.addDropdown("format", {
+    editor.ui.addDropdown("format", {
       text: "Format",
       tooltip: "Text format",
       options: [
@@ -184,7 +184,7 @@ export const formattingPlugin: EditorPlugin = {
       { label: "Justify", value: "justify" },
     ];
 
-    editor.addDropdown("align", {
+    editor.ui.addDropdown("align", {
       text: "Align",
       tooltip: "Text alignment",
       options: alignOptions.map((option) => ({

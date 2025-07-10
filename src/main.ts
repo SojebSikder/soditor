@@ -5,10 +5,12 @@ import {
   fontPlugin,
   colorPickerPlugin,
 } from "./lib/index";
+import { linkPlugin } from "./lib/plugins/link";
 
 const editor = new Editor("#soditor-toolbar", "#soditor-editor");
 editor.use(undoRedoPlugin);
 editor.use(formattingPlugin);
+editor.use(linkPlugin);
 editor.use(fontPlugin);
 editor.use(colorPickerPlugin);
 

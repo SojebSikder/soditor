@@ -35,14 +35,14 @@ import { Editor } from "../editor/editor";
 export const undoRedoPlugin: EditorPlugin = {
   name: "undoRedo",
   init(editor: Editor) {
-    editor.addButton("undo", {
+    editor.ui.addButton("undo", {
       text: "Undo",
       tooltip: "Undo",
       onAction: () => {
         editor.undo();
       },
     });
-    editor.addButton("redo", {
+    editor.ui.addButton("redo", {
       text: "Redo",
       tooltip: "Redo",
       onAction: () => {
