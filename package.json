@@ -1,6 +1,6 @@
 {
-  "name": "soditorjs",
-  "version": "0.0.1",
+  "name": "soditor",
+  "version": "0.0.4",
   "type": "module",
   "main": "dist/soditor.umd.js",
   "module": "dist/soditor.es.js",
