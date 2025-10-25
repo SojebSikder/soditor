@@ -12,4 +12,14 @@ export class Utils {
       .toString(36)
       .substring(2, 10)}`;
   }
+
+  static debounce<T extends (...args: any[]) => void>(func: T, delay: number): T {
+    let timeoutId: number | null = null;
+    return function (this: any, ...args: any[]) {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = window.setTimeout(() => func.apply(this, args), delay);
+    } as T;
+  }
 }

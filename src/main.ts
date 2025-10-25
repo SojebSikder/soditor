@@ -5,6 +5,7 @@ import {
   fontPlugin,
   colorPickerPlugin,
 } from "./lib/index";
+import { contextMenuPlugin } from "./lib/plugins/contextMenu";
 import { linkPlugin } from "./lib/plugins/link";
 import { tablePlugin } from "./lib/plugins/table";
 
@@ -14,7 +15,8 @@ editor.use(formattingPlugin);
 editor.use(linkPlugin);
 editor.use(fontPlugin);
 editor.use(colorPickerPlugin);
-editor.use(tablePlugin)
+editor.use(tablePlugin);
+editor.use(contextMenuPlugin)
 
 editor.use({
   name: "examplePlugin",

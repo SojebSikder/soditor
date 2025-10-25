@@ -64,3 +64,4 @@ export const undoRedoPlugin: EditorPlugin = {
 
 
 ```
+See more complex plugin example in `src/lib/plugins/`

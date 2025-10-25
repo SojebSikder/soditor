@@ -7,6 +7,7 @@ export type EditorEventMap = {
   pluginDestroy: { pluginName: string };
   execCommand: { command: string };
   contentChange: { html: string };
+  commandRegistered: { name: string };
 };
 
 export type EditorEventName = keyof EditorEventMap;

@@ -216,6 +216,97 @@ export class UI {
   }
 
   /**
+   * Create a reusable floating context toolbar.
+   * You can dynamically show it anywhere with custom buttons.
+   */
+  createContextToolbar(): {
+    element: HTMLElement;
+    show: (options: {
+      x: number;
+      y: number;
+      buttons: { icon: string; title: string; onClick: () => void }[];
+      context?: any;
+    }) => void;
+    hide: () => void;
+  } {
+    const toolbar = document.createElement("div");
+    toolbar.id = "soditor-context-toolbar";
+    toolbar.classList.add("soditor-context-toolbar");
+
+    Object.assign(toolbar.style, {
+      position: "absolute",
+      display: "none",
+      background: "#fff",
+      border: "1px solid #ccc",
+      borderRadius: "6px",
+      padding: "4px",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+      zIndex: "9999",
+      gap: "4px",
+      // display: "flex",
+      alignItems: "center",
+    });
+
+    const makeBtn = (icon: string, title: string, handler: () => void) => {
+      const btn = document.createElement("button");
+      btn.innerHTML = icon;
+      btn.title = title;
+      btn.classList.add("soditor-btn");
+      Object.assign(btn.style, {
+        border: "none",
+        background: "#f4f4f4",
+        cursor: "pointer",
+        padding: "4px 6px",
+        borderRadius: "4px",
+      });
+      btn.onmouseenter = () => (btn.style.background = "#e0e0e0");
+      btn.onmouseleave = () => (btn.style.background = "#f4f4f4");
+      btn.onclick = handler;
+      return btn;
+    };
+
+    document.body.appendChild(toolbar);
+
+    // Hide when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!toolbar.contains(e.target as Node)) {
+        toolbar.style.display = "none";
+      }
+    });
+
+    return {
+      element: toolbar,
+
+      /**
+       * Show the toolbar at given position with given buttons
+       */
+      show: ({ x, y, buttons, context }) => {
+        toolbar.innerHTML = ""; // reset previous content
+
+        (toolbar as any).context = context; // store custom context
+        buttons.forEach(({ icon, title, onClick }) => {
+          toolbar.appendChild(
+            makeBtn(icon, title, () => {
+              onClick();
+            })
+          );
+        });
+
+        toolbar.style.left = `${x}px`;
+        toolbar.style.top = `${y}px`;
+        toolbar.style.display = "flex";
+      },
+
+      /**
+       * Hide the toolbar
+       */
+      hide: () => {
+        toolbar.style.display = "none";
+      },
+    };
+  }
+
+  /**
    * Add a tooltip to an element
    * @param element - The element to add the tooltip to
    * @param tooltipText - The text of the tooltip

@@ -6,19 +6,7 @@ import type {
 } from "./editorEventEmitter";
 import { getRegisteredPlugin } from "./pluginRegistry";
 import { UI } from "./ui";
-
-function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  delay: number
-): T {
-  let timeoutId: number | null = null;
-  return function (this: any, ...args: any[]) {
-    if (timeoutId !== null) {
-      clearTimeout(timeoutId);
-    }
-    timeoutId = window.setTimeout(() => func.apply(this, args), delay);
-  } as T;
-}
+import { Utils } from "./utils";
 
 /**
  * Editor class
@@ -36,6 +24,8 @@ export class Editor {
   private maxHistory = 100;
   private undoStack: string[] = [];
   private redoStack: string[] = [];
+
+  private commands: Map<string, (...args: any[]) => void> = new Map();
 
   /**
    * Saved range for selection range
@@ -66,7 +56,7 @@ export class Editor {
     this.editor.setAttribute("contenteditable", "true");
 
     // Save state on input
-    const debouncedSave = debounce(() => {
+    const debouncedSave = Utils.debounce(() => {
       this.saveState();
       this.emitter.emit("input", { html: this.editor.innerHTML });
     }, 300);
@@ -101,6 +91,34 @@ export class Editor {
 
     // Initialize UI
     this.ui = new UI(this);
+
+    // preload built-in commands
+    this.registerCommand("undo", () => this.undo());
+    this.registerCommand("redo", () => this.redo());
+  }
+
+  /**
+   * Register a new editor command
+   */
+  registerCommand(name: string, handler: (...args: any[]) => void): void {
+    this.commands.set(name, handler);
+    this.emitter.emit("commandRegistered", { name });
+  }
+
+  /**
+   * Execute a registered command
+   */
+  execCommand(name: string, ...args: any[]): void {
+    const handler = this.commands.get(name);
+    if (!handler) {
+      console.warn(`Command "${name}" not found`);
+      return;
+    }
+
+    this.saveSelection(); // Save before exec
+    handler(...args);
+    this.saveState(); // Save after exec
+    this.emitter.emit("execCommand", { command: name });
   }
 
   saveState(): void {

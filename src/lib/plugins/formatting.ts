@@ -4,23 +4,82 @@ import { Editor } from "../editor/editor";
 export const formattingPlugin: EditorPlugin = {
   name: "formatting",
   init(editor: Editor) {
+    // Register commands for external use
+    editor.registerCommand("bold", () => {
+      const range = editor.getSelectionRange();
+      if (!range || range.collapsed) return;
+
+      const parent = editor.getParentElement();
+      if (parent?.tagName === "STRONG") {
+        return editor.removeParentElement(parent);
+      }
+
+      editor.exec((frag) => {
+        const el = document.createElement("strong");
+        el.appendChild(frag);
+        return el;
+      });
+    });
+
+    editor.registerCommand("italic", () => {
+      const range = editor.getSelectionRange();
+      if (!range || range.collapsed) return;
+
+      const parent = editor.getParentElement();
+      if (parent?.tagName === "EM") {
+        return editor.removeParentElement(parent);
+      }
+
+      editor.exec((frag) => {
+        const el = document.createElement("em");
+        el.appendChild(frag);
+        return el;
+      });
+    });
+
+    editor.registerCommand("underline", () => {
+      const range = editor.getSelectionRange();
+      if (!range || range.collapsed) return;
+
+      const parent = editor.getParentElement();
+      if (parent?.tagName === "U") {
+        return editor.removeParentElement(parent);
+      }
+
+      editor.exec((frag) => {
+        const el = document.createElement("u");
+        el.appendChild(frag);
+        return el;
+      });
+    });
+
+    editor.registerCommand("insertImage", (url?: string) => {
+      const imageUrl = url || prompt("Enter image URL:");
+      if (!imageUrl) return;
+
+      const range = editor.getSelectionRange();
+      if (!range) return;
+
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = "Inserted Image";
+      img.style.maxWidth = "100%";
+
+      range.insertNode(img);
+      range.setStartAfter(img);
+      range.setEndAfter(img);
+
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    });
+    // End registering commands
+
     editor.ui.addButton("bold", {
       text: "<b>B</b>",
       tooltip: "Bold",
       onAction: () => {
-        const range = editor.getSelectionRange();
-        if (!range || range.collapsed) return;
-
-        const parent = editor.getParentElement();
-        if (parent?.tagName == "STRONG") {
-          return editor.removeParentElement(parent);
-        }
-
-        editor.exec((frag) => {
-          const el = document.createElement("strong");
-          el.appendChild(frag);
-          return el;
-        });
+        editor.execCommand("bold");
       },
     });
 
@@ -28,19 +87,7 @@ export const formattingPlugin: EditorPlugin = {
       text: "<i>I</i>",
       tooltip: "Italic",
       onAction: () => {
-        const range = editor.getSelectionRange();
-        if (!range || range.collapsed) return;
-
-        const parent = editor.getParentElement();
-        if (parent?.tagName == "EM") {
-          return editor.removeParentElement(parent);
-        }
-
-        editor.exec((frag) => {
-          const el = document.createElement("em");
-          el.appendChild(frag);
-          return el;
-        });
+        editor.execCommand("italic");
       },
     });
 
@@ -48,19 +95,7 @@ export const formattingPlugin: EditorPlugin = {
       text: "<u>U</u>",
       tooltip: "Underline",
       onAction: () => {
-        const range = editor.getSelectionRange();
-        if (!range || range.collapsed) return;
-
-        const parent = editor.getParentElement();
-        if (parent?.tagName == "U") {
-          return editor.removeParentElement(parent);
-        }
-
-        editor.exec((frag) => {
-          const el = document.createElement("u");
-          el.appendChild(frag);
-          return el;
-        });
+        editor.execCommand("underline");
       },
     });
 
@@ -68,26 +103,7 @@ export const formattingPlugin: EditorPlugin = {
       text: "🖼️ Image",
       tooltip: "Insert Image",
       onAction: () => {
-        const url = prompt("Enter image URL:");
-        if (!url) return;
-
-        const range = editor.getSelectionRange();
-        if (!range) return;
-
-        const img = document.createElement("img");
-        img.src = url;
-        img.alt = "Inserted Image";
-        img.style.maxWidth = "100%";
-
-        range.insertNode(img);
-        range.setStartAfter(img);
-        range.setEndAfter(img);
-
-        const sel = window.getSelection();
-        if (sel) {
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
+        editor.execCommand("insertImage");
       },
     });
 
