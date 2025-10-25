@@ -46,6 +46,21 @@ export class UI {
 
     this.showModal(id);
   }
+  /**
+   * Show a prompt dialog that returns user input
+   * @param message - The label or question
+   * @param defaultValue - Optional default input value
+   * @param title - Optional title (default: "Prompt")
+   */
+  promptAsync(
+    message: string,
+    defaultValue = "",
+    title = "Prompt"
+  ): Promise<string | null> {
+    return new Promise((resolve) => {
+      this.prompt(message, defaultValue, title, (value) => resolve(value));
+    });
+  }
 
   /**
    * Show a prompt dialog that returns user input
@@ -60,16 +75,20 @@ export class UI {
     title = "Prompt",
     callback: (value: string | null) => void
   ): void {
-    const id = Utils.generateId("soditor-prompt-modal");
-    // Remove existing modal if any
-    document.getElementById(id)?.remove();
+    const modalId = Utils.generateId("soditor-prompt-modal");
+    const inputId = Utils.generateId("soditor-prompt-modal-input");
 
+    // Remove any existing modal
+    document.getElementById(modalId)?.remove();
+
+    // Add the modal
     this.addModal({
-      id,
+      id: modalId,
       title,
       content: `
       <label class="soditor-label">${message}</label>
-      <input type="text" class="soditor-input" value="${defaultValue}" style="width:100%;margin-top:8px;padding:6px;" />
+      <input id="${inputId}" type="text" class="soditor-input" value="${defaultValue}" 
+             style="width:100%;margin-top:8px;padding:6px;" />
     `,
       buttons: [
         {
@@ -83,25 +102,21 @@ export class UI {
           text: "OK",
           primary: true,
           onClick: ({ closeModal }) => {
-            const input = document.querySelector<HTMLInputElement>(
-              "#soditor-prompt-modal input"
-            );
-            const value = input?.value ?? "";
+            const input = document.getElementById(inputId) as HTMLInputElement;
             closeModal();
-            callback(value);
+            callback(input?.value ?? "");
           },
         },
       ],
     });
 
-    this.showModal(id);
+    // Show the modal
+    this.showModal(modalId);
 
-    // Focus input automatically
-    setTimeout(() => {
-      document
-        .querySelector<HTMLInputElement>("#soditor-prompt-modal input")
-        ?.focus();
-    }, 50);
+    // Focus input immediately after modal is visible
+    const inputEl = document.getElementById(inputId) as HTMLInputElement;
+    inputEl?.focus();
+    inputEl?.select(); // optional: selects default text for quick editing
   }
 
   confirm(

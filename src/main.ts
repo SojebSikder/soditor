@@ -14,8 +14,8 @@ editor.use(undoRedoPlugin);
 editor.use(formattingPlugin);
 editor.use(linkPlugin);
 editor.use(fontPlugin);
-editor.use(colorPickerPlugin);
 editor.use(tablePlugin);
+editor.use(colorPickerPlugin);
 editor.use(contextMenuPlugin)
 
 editor.use({

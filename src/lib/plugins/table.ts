@@ -8,28 +8,28 @@ export const tablePlugin: EditorPlugin = {
     editor.ui.addButton("table", {
       text: "📊 Table",
       tooltip: "Insert Table",
-      onAction: () => {
-        const rows = parseInt(prompt("Enter number of rows:", "2") || "2");
-        const cols = parseInt(prompt("Enter number of columns:", "2") || "2");
+      onAction: async () => {
+        const rowsValue = await editor.ui.promptAsync(
+          "Enter number of rows:",
+          "2",
+          "Select rows"
+        );
+        const colsValue = await editor.ui.promptAsync(
+          "Enter number of columns:",
+          "2",
+          "Select columns"
+        );
+
+        const rows = parseInt(rowsValue || "0");
+        const cols = parseInt(colsValue || "0");
 
         if (isNaN(rows) || isNaN(cols) || rows <= 0 || cols <= 0) {
-          alert("Invalid size!");
+          editor.ui.alert("Invalid size!");
           return;
         }
 
         insertTable(editor, rows, cols);
       },
-    });
-
-    // --- Quick Presets Dropdown ---
-    editor.ui.addDropdown("tablePresets", {
-      text: "Table Presets",
-      tooltip: "Quick insert",
-      options: [
-        { label: "2 × 2", value: "2x2", onSelect: () => insertTable(editor, 2, 2) },
-        { label: "3 × 3", value: "3x3", onSelect: () => insertTable(editor, 3, 3) },
-        { label: "4 × 4", value: "4x4", onSelect: () => insertTable(editor, 4, 4) },
-      ],
     });
 
     // --- Table Context Toolbar (Floating) ---
@@ -132,62 +132,72 @@ function createContextToolbar(editor: Editor): HTMLElement {
     return btn;
   };
 
-  toolbar.appendChild(makeBtn("➕ Row", "Add row below", () => {
-    const cell = (toolbar as any).currentCell as HTMLTableCellElement;
-    if (!cell) return;
-    const row = cell.parentElement as HTMLTableRowElement;
-    const table = row.parentElement as HTMLTableElement;
-    const newRow = row.cloneNode(true) as HTMLTableRowElement;
-    newRow.querySelectorAll("td").forEach((td) => (td.innerHTML = "&nbsp;"));
-    table.insertBefore(newRow, row.nextSibling);
-    editor.saveState();
-  }));
-
-  toolbar.appendChild(makeBtn("➖ Row", "Delete this row", () => {
-    const cell = (toolbar as any).currentCell as HTMLTableCellElement;
-    if (!cell) return;
-    const row = cell.parentElement as HTMLTableRowElement;
-    row.remove();
-    editor.saveState();
-  }));
-
-  toolbar.appendChild(makeBtn("➕ Col", "Add column", () => {
-    const cell = (toolbar as any).currentCell as HTMLTableCellElement;
-    if (!cell) return;
-    const colIndex = Array.from(cell.parentElement!.children).indexOf(cell);
-    const table = cell.closest("table") as HTMLTableElement;
-    table.querySelectorAll("tr").forEach((tr) => {
-      const newTd = document.createElement("td");
-      newTd.style.border = "1px solid #ccc";
-      newTd.style.padding = "6px";
-      newTd.style.minWidth = "40px";
-      newTd.contentEditable = "true";
-      newTd.innerHTML = "&nbsp;";
-      tr.insertBefore(newTd, tr.children[colIndex + 1] || null);
-    });
-    editor.saveState();
-  }));
-
-  toolbar.appendChild(makeBtn("➖ Col", "Delete this column", () => {
-    const cell = (toolbar as any).currentCell as HTMLTableCellElement;
-    if (!cell) return;
-    const colIndex = Array.from(cell.parentElement!.children).indexOf(cell);
-    const table = cell.closest("table") as HTMLTableElement;
-    table.querySelectorAll("tr").forEach((tr) => {
-      if (tr.children[colIndex]) tr.children[colIndex].remove();
-    });
-    editor.saveState();
-  }));
-
-  toolbar.appendChild(makeBtn("🗑️", "Delete entire table", () => {
-    const cell = (toolbar as any).currentCell as HTMLTableCellElement;
-    const table = cell?.closest("table");
-    if (table) {
-      table.remove();
-      toolbar.style.display = "none";
+  toolbar.appendChild(
+    makeBtn("➕ Row", "Add row below", () => {
+      const cell = (toolbar as any).currentCell as HTMLTableCellElement;
+      if (!cell) return;
+      const row = cell.parentElement as HTMLTableRowElement;
+      const table = row.parentElement as HTMLTableElement;
+      const newRow = row.cloneNode(true) as HTMLTableRowElement;
+      newRow.querySelectorAll("td").forEach((td) => (td.innerHTML = "&nbsp;"));
+      table.insertBefore(newRow, row.nextSibling);
       editor.saveState();
-    }
-  }));
+    })
+  );
+
+  toolbar.appendChild(
+    makeBtn("➖ Row", "Delete this row", () => {
+      const cell = (toolbar as any).currentCell as HTMLTableCellElement;
+      if (!cell) return;
+      const row = cell.parentElement as HTMLTableRowElement;
+      row.remove();
+      editor.saveState();
+    })
+  );
+
+  toolbar.appendChild(
+    makeBtn("➕ Col", "Add column", () => {
+      const cell = (toolbar as any).currentCell as HTMLTableCellElement;
+      if (!cell) return;
+      const colIndex = Array.from(cell.parentElement!.children).indexOf(cell);
+      const table = cell.closest("table") as HTMLTableElement;
+      table.querySelectorAll("tr").forEach((tr) => {
+        const newTd = document.createElement("td");
+        newTd.style.border = "1px solid #ccc";
+        newTd.style.padding = "6px";
+        newTd.style.minWidth = "40px";
+        newTd.contentEditable = "true";
+        newTd.innerHTML = "&nbsp;";
+        tr.insertBefore(newTd, tr.children[colIndex + 1] || null);
+      });
+      editor.saveState();
+    })
+  );
+
+  toolbar.appendChild(
+    makeBtn("➖ Col", "Delete this column", () => {
+      const cell = (toolbar as any).currentCell as HTMLTableCellElement;
+      if (!cell) return;
+      const colIndex = Array.from(cell.parentElement!.children).indexOf(cell);
+      const table = cell.closest("table") as HTMLTableElement;
+      table.querySelectorAll("tr").forEach((tr) => {
+        if (tr.children[colIndex]) tr.children[colIndex].remove();
+      });
+      editor.saveState();
+    })
+  );
+
+  toolbar.appendChild(
+    makeBtn("🗑️", "Delete entire table", () => {
+      const cell = (toolbar as any).currentCell as HTMLTableCellElement;
+      const table = cell?.closest("table");
+      if (table) {
+        table.remove();
+        toolbar.style.display = "none";
+        editor.saveState();
+      }
+    })
+  );
 
   return toolbar;
 }
