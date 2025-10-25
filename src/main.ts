@@ -6,6 +6,7 @@ import {
   colorPickerPlugin,
 } from "./lib/index";
 import { linkPlugin } from "./lib/plugins/link";
+import { tablePlugin } from "./lib/plugins/table";
 
 const editor = new Editor("#soditor-toolbar", "#soditor-editor");
 editor.use(undoRedoPlugin);
@@ -13,10 +14,12 @@ editor.use(formattingPlugin);
 editor.use(linkPlugin);
 editor.use(fontPlugin);
 editor.use(colorPickerPlugin);
+editor.use(tablePlugin)
 
 editor.use({
   name: "examplePlugin",
   init(editor) {
+    // example of events
     // editor.on("input", ({ html }) => {
     //   // Sync to backend or localStorage
     //   console.log("Real-time HTML:", html);

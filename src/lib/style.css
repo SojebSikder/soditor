@@ -170,7 +170,7 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .soditor-modal-content {
@@ -179,7 +179,7 @@
   padding: 20px;
   border-radius: 8px;
   width: 400px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
 }
 
@@ -202,3 +202,123 @@
 }
 
 /* end modal window */
+
+.soditor-label {
+  font-weight: 500;
+}
+
+.soditor-input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+.soditor-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 1px #007bff33;
+}
+
+/* Toast */
+.soditor-toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+.soditor-toast {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #fff;
+}
+.soditor-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.soditor-toast-info {
+  background: #3498db;
+}
+.soditor-toast-success {
+  background: #2ecc71;
+}
+.soditor-toast-error {
+  background: #e74c3c;
+}
+
+/* End Toast */
+
+/* Loader */
+.soditor-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 16px;
+  z-index: 9998;
+}
+.soditor-loader-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #fff;
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* End loader */
+
+/* Snackbar */
+.soditor-snackbar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #323232;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+.soditor-snackbar.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* End snackbar */
+
+/* Floating toolbar */
+.soditor-floating-toolbar {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 8px;
+  z-index: 1000;
+}
+
+/* End floating toolbar */

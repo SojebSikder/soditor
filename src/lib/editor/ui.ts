@@ -1,5 +1,6 @@
 import { Editor } from "./editor";
 import { EditorButtonElementProps, EditorDropDownElementProps } from "./types";
+import { Utils } from "./utils";
 
 interface ModalButton {
   text: string;
@@ -18,6 +19,200 @@ export class UI {
 
   constructor(editor: Editor) {
     this.editor = editor;
+  }
+
+  /**
+   * Show a simple alert dialog
+   * @param message - The message to display
+   * @param title - Optional title (default: "Alert")
+   */
+  alert(message: string, title = "Alert"): void {
+    const id = Utils.generateId("soditor-alert-modal");
+    // Remove existing modal if any
+    document.getElementById(id)?.remove();
+
+    this.addModal({
+      id,
+      title,
+      content: `<p>${message}</p>`,
+      buttons: [
+        {
+          text: "OK",
+          primary: true,
+          onClick: ({ closeModal }) => closeModal(),
+        },
+      ],
+    });
+
+    this.showModal(id);
+  }
+
+  /**
+   * Show a prompt dialog that returns user input
+   * @param message - The label or question
+   * @param defaultValue - Optional default input value
+   * @param title - Optional title (default: "Prompt")
+   * @param callback - Called with user input or null if canceled
+   */
+  prompt(
+    message: string,
+    defaultValue = "",
+    title = "Prompt",
+    callback: (value: string | null) => void
+  ): void {
+    const id = Utils.generateId("soditor-prompt-modal");
+    // Remove existing modal if any
+    document.getElementById(id)?.remove();
+
+    this.addModal({
+      id,
+      title,
+      content: `
+      <label class="soditor-label">${message}</label>
+      <input type="text" class="soditor-input" value="${defaultValue}" style="width:100%;margin-top:8px;padding:6px;" />
+    `,
+      buttons: [
+        {
+          text: "Cancel",
+          onClick: ({ closeModal }) => {
+            closeModal();
+            callback(null);
+          },
+        },
+        {
+          text: "OK",
+          primary: true,
+          onClick: ({ closeModal }) => {
+            const input = document.querySelector<HTMLInputElement>(
+              "#soditor-prompt-modal input"
+            );
+            const value = input?.value ?? "";
+            closeModal();
+            callback(value);
+          },
+        },
+      ],
+    });
+
+    this.showModal(id);
+
+    // Focus input automatically
+    setTimeout(() => {
+      document
+        .querySelector<HTMLInputElement>("#soditor-prompt-modal input")
+        ?.focus();
+    }, 50);
+  }
+
+  confirm(
+    message: string,
+    title = "Confirm",
+    callback: (ok: boolean) => void
+  ): void {
+    const id = Utils.generateId("soditor-confirm-modal");
+
+    this.addModal({
+      id,
+      title,
+      content: `<p>${message}</p>`,
+      buttons: [
+        {
+          text: "Cancel",
+          onClick: ({ closeModal }) => {
+            closeModal();
+            callback(false);
+          },
+        },
+        {
+          text: "OK",
+          primary: true,
+          onClick: ({ closeModal }) => {
+            closeModal();
+            callback(true);
+          },
+        },
+      ],
+    });
+
+    this.showModal(id);
+  }
+
+  showToast(
+    message: string,
+    type: "info" | "success" | "error" = "info",
+    duration = 3000
+  ): void {
+    const containerId = "soditor-toast-container";
+    let container = document.getElementById(containerId);
+
+    if (!container) {
+      container = document.createElement("div");
+      container.id = containerId;
+      container.classList.add("soditor-toast-container");
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.classList.add("soditor-toast", `soditor-toast-${type}`);
+    toast.innerText = message;
+
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add("show"), 50);
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 500);
+    }, duration);
+  }
+
+  showLoader(message = "Loading..."): void {
+    const id = "soditor-loader";
+    if (document.getElementById(id)) return;
+
+    const loader = document.createElement("div");
+    loader.id = id;
+    loader.classList.add("soditor-loader-overlay");
+    loader.innerHTML = `
+    <div class="soditor-loader-spinner"></div>
+    <p>${message}</p>
+  `;
+    document.body.appendChild(loader);
+  }
+
+  hideLoader(): void {
+    document.getElementById("soditor-loader")?.remove();
+  }
+
+  showSnackbar(message: string, duration = 2500): void {
+    const snackbar = document.createElement("div");
+    snackbar.className = "soditor-snackbar";
+    snackbar.innerText = message;
+    document.body.appendChild(snackbar);
+
+    setTimeout(() => snackbar.classList.add("show"), 50);
+
+    setTimeout(() => {
+      snackbar.classList.remove("show");
+      setTimeout(() => snackbar.remove(), 400);
+    }, duration);
+  }
+
+  addFloatingToolbar(
+    buttons: { icon: string; tooltip: string; onClick: () => void }[]
+  ): void {
+    const toolbar = document.createElement("div");
+    toolbar.classList.add("soditor-floating-toolbar");
+
+    buttons.forEach(({ icon, tooltip, onClick }) => {
+      const btn = document.createElement("button");
+      btn.classList.add("soditor-btn");
+      btn.innerHTML = icon;
+      this.addTooltip(btn, tooltip);
+      btn.onclick = onClick;
+      toolbar.appendChild(btn);
+    });
+
+    document.body.appendChild(toolbar);
   }
 
   /**

@@ -1,9 +1,5 @@
 import { EditorEventEmitter } from "./editorEventEmitter";
-import type {
-  EditorButtonElementProps,
-  EditorDropDownElementProps,
-  EditorPlugin,
-} from "./types";
+import type { EditorPlugin } from "./types";
 import type {
   EditorEventName,
   EditorEventCallback,
