@@ -1,6 +1,6 @@
 # Description
 
-Soditor is a library for rich text editing with plugin architecture.
+Soditor is a library for rich text editing with powerful plugin architecture.
 
 # Screenshots
 
@@ -61,5 +61,6 @@ export const undoRedoPlugin: EditorPlugin = {
     });
   },
 };
+
 
 ```

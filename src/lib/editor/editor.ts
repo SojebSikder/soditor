@@ -244,14 +244,33 @@ export class Editor {
    * @param parent - The parent element to remove
    */
   removeParentElement(parent: Element): void {
-    // Remove the strong by replacing it with its children
-    const element = parent;
     const frag = document.createDocumentFragment();
-    while (element.firstChild) {
-      frag.appendChild(element.firstChild);
+    const firstChild = parent.firstChild;
+    const lastChild = parent.lastChild;
+
+    // Move all children out of the element
+    while (parent.firstChild) {
+      frag.appendChild(parent.firstChild);
     }
-    element.replaceWith(frag);
-    return;
+
+    // Replace the element with its children
+    parent.replaceWith(frag);
+
+    // Restore selection around unwrapped text
+    if (firstChild && lastChild) {
+      const newRange = document.createRange();
+      newRange.setStartBefore(firstChild);
+      newRange.setEndAfter(lastChild);
+
+      const sel = window.getSelection();
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+      }
+
+      // Save it for later
+      this.savedRange = newRange.cloneRange();
+    }
   }
 
   /**
@@ -280,17 +299,38 @@ export class Editor {
     wrapper.appendChild(node);
     range.insertNode(wrapper);
 
-    range.setStartAfter(node);
-    range.setEndAfter(node);
-    const sel = window.getSelection();
-    sel?.removeAllRanges();
-    sel?.addRange(range);
+    // Detect block vs inline element
+    const computedStyle = window.getComputedStyle(node as Element);
+    const isBlock =
+      computedStyle.display === "block" ||
+      /^(DIV|P|H[1-6]|SECTION|ARTICLE|BLOCKQUOTE|UL|OL|LI)$/i.test(
+        (node as Element).tagName
+      );
 
-    // Save state after exec
+    // Create a new range for selection
+    const newRange = document.createRange();
+
+    if (isBlock) {
+      // For block elements → move caret after the element
+      newRange.setStartAfter(node);
+      newRange.collapse(true);
+    } else {
+      // For inline elements → reselect the formatted content
+      newRange.selectNodeContents(node);
+    }
+
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+    }
+
+    // Save range for next operation
+    this.savedRange = newRange.cloneRange();
+
+    // Save state after formatting
     this.saveState();
 
-    // restore selection after exec
-    // this.restoreSelection();
     this.emitter.emit("execCommand", { command: formatFn.name || "unknown" });
   }
 
