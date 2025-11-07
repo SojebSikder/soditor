@@ -1,11 +1,11 @@
 {
   "name": "soditor",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "type": "module",
   "main": "dist/soditor.umd.js",
   "module": "dist/soditor.es.js",
   "types": "dist/types/lib/index.d.ts",
-  "homepage": "https://sojebsikder.github.io/soditor",
+  "homepage": "https://github.com/sojebsikder/soditor",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

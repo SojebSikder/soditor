@@ -38,12 +38,10 @@ export class Editor {
 
   /**
    * Constructor
-   * @param toolbarId - The id of the toolbar
-   * @param editorId - The id of the editor
+   * @param toolbar - The element of the toolbar
+   * @param editor - The element of the editor
    */
-  constructor(toolbarId: string, editorId: string) {
-    const toolbar = document.querySelector(toolbarId) as HTMLElement;
-    const editor = document.querySelector(editorId) as HTMLElement;
+  constructor(toolbar: HTMLElement, editor: HTMLElement) {
     if (!toolbar || !editor) {
       throw new Error("Toolbar or Editor not found");
     }
@@ -51,6 +49,8 @@ export class Editor {
     this.editor = editor;
 
     // Set attributes
+    this.toolbar.style.position = "sticky";
+    this.toolbar.style.top = "0";
     this.toolbar.setAttribute("role", "toolbar");
     this.editor.setAttribute("role", "textbox");
     this.editor.setAttribute("contenteditable", "true");
@@ -64,11 +64,9 @@ export class Editor {
     this.inputListener = debouncedSave;
 
     this.editor.addEventListener("input", debouncedSave);
-
     this.editor.addEventListener("mouseup", () => {
       this.emitter.emit("selectionchange", { range: this.getSelectionRange() });
     });
-
     this.editor.addEventListener("keyup", () => {
       this.emitter.emit("selectionchange", { range: this.getSelectionRange() });
     });

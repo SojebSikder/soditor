@@ -377,7 +377,7 @@ export class UI {
     // Add options to the dropdown menu
     for (const opt of props.options || []) {
       const item = document.createElement("a");
-      item.textContent = opt.label;
+      item.innerHTML = opt.label;
       item.onclick = () => {
         if (opt.onSelect) {
           this.editor.restoreSelection();
@@ -389,7 +389,8 @@ export class UI {
     }
 
     // Toggle menu
-    button.onclick = () => {
+    button.onclick = (e) => {
+      e.stopPropagation();
       this.editor.saveSelection();
       menu.classList.toggle("soditor-show");
     };

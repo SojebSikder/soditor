@@ -5,7 +5,16 @@ export const linkPlugin: EditorPlugin = {
   name: "link",
   init(editor: Editor) {
     editor.ui.addButton("myButton", {
-      text: "Insert Link",
+      text: `
+      <svg xmlns="http://www.w3.org/2000/svg"
+     width="24" height="24" viewBox="0 0 24 24"
+     fill="none" stroke="currentColor" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-label="Link">
+  <path d="M10 13a5 5 0 0 1 0-7l1.5-1.5a5 5 0 0 1 7 7L17 13" />
+  <path d="M14 11a5 5 0 0 1 0 7l-1.5 1.5a5 5 0 0 1-7-7L7 11" />
+</svg>
+`,
       onAction: () => {
         editor.saveSelection();
         editor.ui.showModal("insertLinkModal");

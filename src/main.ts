@@ -9,7 +9,10 @@ import { contextMenuPlugin } from "./lib/plugins/contextMenu";
 import { linkPlugin } from "./lib/plugins/link";
 import { tablePlugin } from "./lib/plugins/table";
 
-const editor = new Editor("#soditor-toolbar", "#soditor-editor");
+const toolbar = document.getElementById("soditor-toolbar");
+const editorContainer = document.getElementById("soditor-editor");
+
+const editor = new Editor(toolbar, editorContainer);
 editor.use(undoRedoPlugin);
 editor.use(formattingPlugin);
 editor.use(linkPlugin);
