@@ -5,7 +5,7 @@
   "main": "dist/soditor.umd.js",
   "module": "dist/soditor.es.js",
   "types": "dist/types/lib/index.d.ts",
-  "homepage": "https://github.com/sojebsikder/soditor",
+  "homepage": "https://sojebsikder.github.io/soditor",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
