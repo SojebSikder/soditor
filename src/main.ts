@@ -1,13 +1,14 @@
 import {
   Editor,
+  contextMenuPlugin,
+  linkPlugin,
+  tablePlugin,
   formattingPlugin,
   undoRedoPlugin,
   fontPlugin,
   colorPickerPlugin,
+  bgColorPickerPlugin,
 } from "./lib/index";
-import { contextMenuPlugin } from "./lib/plugins/contextMenu";
-import { linkPlugin } from "./lib/plugins/link";
-import { tablePlugin } from "./lib/plugins/table";
 
 const toolbar = document.getElementById("soditor-toolbar");
 const editorContainer = document.getElementById("soditor-editor");
@@ -19,7 +20,8 @@ editor.use(linkPlugin);
 editor.use(fontPlugin);
 editor.use(tablePlugin);
 editor.use(colorPickerPlugin);
-editor.use(contextMenuPlugin)
+editor.use(bgColorPickerPlugin);
+editor.use(contextMenuPlugin);
 
 editor.use({
   name: "examplePlugin",

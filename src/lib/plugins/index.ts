@@ -4,4 +4,5 @@ export * from "./formatting";
 export * from "./link";
 export * from "./undoRedo";
 export * from "./table";
-export * from "./contextMenu"
+export * from "./contextMenu";
+export * from "./bgColorPicker";

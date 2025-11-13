@@ -4,25 +4,20 @@ import { Editor } from "../editor/editor";
 /**
  * Text color plugin
  */
-export const colorPickerPlugin: EditorPlugin = {
+export const bgColorPickerPlugin: EditorPlugin = {
   name: "colorPicker",
   init(editor: Editor) {
     editor.ui.addButton("colorPicker", {
-      text: `<svg xmlns="http://www.w3.org/2000/svg"
-     width="24" height="24" viewBox="0 0 24 24"
-     fill="none" stroke="currentColor" stroke-width="2"
-     stroke-linecap="round" stroke-linejoin="round"
-     role="img" aria-label="Color">
-  <!-- Pencil tip / color drop -->
-  <path d="M12 19l7-7-4-4-7 7v4h4z" />
-  <!-- Optional color square / palette -->
-  <rect x="2" y="20" width="4" height="4" rx="1" ry="1" />
-</svg>
+      text: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 21h18" />
+        <path d="M14 3l7 7-6 6L8 9 14 3z" />
+        <path d="M7.5 16.5l-1.5 1.5" />
+      </svg>
 `,
-      tooltip: "Text Color",
+      tooltip: "BG Color",
       onAction: () => {
         const input = editor.toolbar.querySelector(
-          "#soditor-color-picker-label",
+          "#soditor-bg-color-picker-label",
         ) as HTMLInputElement;
         if (input) {
           input.click();
@@ -31,7 +26,7 @@ export const colorPickerPlugin: EditorPlugin = {
     });
 
     const label = document.createElement("label");
-    label.id = "soditor-color-picker-label";
+    label.id = "soditor-bg-color-picker-label";
     label.style.marginLeft = "8px";
     label.style.display = "none";
 
@@ -45,7 +40,7 @@ export const colorPickerPlugin: EditorPlugin = {
       const color = input.value;
       editor.exec((fragment) => {
         const span = document.createElement("span");
-        span.style.color = color;
+        span.style.backgroundColor = color;
         span.appendChild(fragment);
         return span;
       });
