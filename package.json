@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "prepublishOnly": "npm run build:lib",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist-site"
   },
   "devDependencies": {
     "@types/node": "^24.0.3",
