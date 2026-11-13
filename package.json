@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:lib": "tsc && vite build --config vite.lib.config.ts",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc",
     "preview": "vite preview",
-    "prepublishOnly": "npm run build && tsc",
+    "prepublishOnly": "npm run build:lib",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
